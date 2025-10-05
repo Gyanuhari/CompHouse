@@ -12,10 +12,15 @@ builder.Services.AddDbContext<CompContext>(option =>
 {
     option.UseSqlServer(builder.Configuration.GetConnectionString("CompConnection"));
 });
+builder.Services.AddCors();
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 app.MapControllers();
+app.UseCors(option =>
+{
+    option.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:3000");
+});
 
 app.Run();

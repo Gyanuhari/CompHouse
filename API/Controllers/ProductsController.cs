@@ -1,3 +1,4 @@
+using API.DTOs.ProductDtos;
 using Core.Entities;
 using Infrastructure.Data;
 using Microsoft.AspNetCore.Mvc;
@@ -17,9 +18,24 @@ public class ProductsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<Product>>> GetProducts()
+    public async Task<ActionResult<List<ProductToReturnDto>>> GetProducts()
     {
-        return await _context.Products.Include(p => p.Specifications).ThenInclude(p => p.ChildSpecifications).ToListAsync();
+        var products = await _context.Products
+            .Include(p => p.Brand)
+            .Include(p => p.Type)
+            .ToListAsync();
+
+        return products.Select(product => new ProductToReturnDto
+        {
+            Id = product.Id,
+            Name = product.Name,
+            Description = product.Description,
+            Price = product.Price,
+            ImageUrl = product.PrimaryImageUrl,
+            Brand = product.Brand?.Name,
+            Type = product.Type?.Name,
+            QuantityInStock = product.QuantityInStock,
+        }).ToList();
     }
 
     [HttpGet("{id:int}")]
