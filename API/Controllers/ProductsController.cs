@@ -39,7 +39,7 @@ public class ProductsController : ControllerBase
     }
 
     [HttpGet("{id:int}")]
-    public async Task<ActionResult<Product>> GetProduct(int id)
+    public async Task<ActionResult<ProductToReturnDto>> GetProduct(int id)
     {
         var product = await _context.Products
             .Include(p => p.Brand)
@@ -50,6 +50,16 @@ public class ProductsController : ControllerBase
 
         if (product == null) return NotFound();
 
-        return product;
+        return new ProductToReturnDto()
+        {
+            Id = product.Id,
+            Name = product.Name,
+            Description = product.Description,
+            Price = product.Price,
+            ImageUrl = product.PrimaryImageUrl,
+            Brand = product.Brand?.Name,
+            Type = product.Type?.Name,
+            QuantityInStock = product.QuantityInStock,
+        };
     }
 }
