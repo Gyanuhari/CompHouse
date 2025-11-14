@@ -1,3 +1,4 @@
+using API.Middlewares;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,10 +14,12 @@ builder.Services.AddDbContext<CompContext>(option =>
     option.UseSqlServer(builder.Configuration.GetConnectionString("CompConnection"));
 });
 builder.Services.AddCors();
+builder.Services.AddTransient<ExceptionMiddleware>();
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+app.UseMiddleware<ExceptionMiddleware>();
 app.MapControllers();
 app.UseCors(option =>
 {
