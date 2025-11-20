@@ -18,6 +18,7 @@ const midLinks = [
   { title: "catalog", path: "/catalog" },
   { title: "about", path: "/about" },
   { title: "contact", path: "/contact" },
+  { title: "error", path: "/error" },
 ];
 
 const rightLinks = [
@@ -54,7 +55,7 @@ export default function NavBar() {
           <Typography component={NavLink} to="/" sx={navStyles} variant="h6">
             CompHouse
           </Typography>
-          <IconButton onClick={()=>dispatch(setDarkMode())}>
+          <IconButton onClick={() => dispatch(setDarkMode())}>
             {darkMode ? <DarkMode /> : <LightMode sx={{ color: "yellow" }} />}
           </IconButton>
         </Box>
