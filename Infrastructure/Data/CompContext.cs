@@ -14,6 +14,8 @@ public class CompContext(DbContextOptions<CompContext> options) : DbContext(opti
     public DbSet<ChildSpecification> ChildSpecifications { get; set; }
     public DbSet<ProductImage> ProductImages { get; set; }
     public DbSet<KeyValue> KeyValues { get; set; }
+    public DbSet<Basket> Baskets { get; set; }
+    public DbSet<BasketItem> BasketItems { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
