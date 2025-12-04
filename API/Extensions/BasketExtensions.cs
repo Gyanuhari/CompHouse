@@ -11,7 +11,7 @@ public static class BasketExtensions
         return new BasketDto()
         {
             BasketId = basket.BasketId,
-            BasketItemDtos = basket.BasketItems?.Select(item => new BasketItemDto()
+            Items = basket.BasketItems?.Select(item => new BasketItemDto()
             {
                 ProductId = item.ProductId,
                 Name = item.Product.Name,
@@ -20,7 +20,7 @@ public static class BasketExtensions
                 PictureUrl = item.Product.PrimaryImageUrl,
                 Type = item.Product.Type?.Name,
                 Brand = item.Product.Brand?.Name,
-            }).ToList()
+            }).ToList(),
         };
     }
 }
