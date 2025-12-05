@@ -45,9 +45,10 @@ export default function NavBar() {
   const dispatch = useAppDispatch();
   const { data } = useFetchBasketQuery();
 
-  const basketCount = data?.items.reduce((sum: number, item: Item) => {
-    return sum + item.quantity;
-  }, 0);
+  const basketCount =
+    data?.items.reduce((sum: number, item: Item) => {
+      return sum + item.quantity;
+    }, 0) || 0;
 
   return (
     <AppBar position="fixed">
