@@ -1,7 +1,8 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { baseQueryWithErrorHandling } from "../../app/api/baseApi";
-import { Item, type Basket } from "../../app/models/basket";
+import { type Item, type Basket } from "../../app/models/basket";
 import type { Product } from "../../app/models/product";
+import { productToItem } from "../../lib/util";
 
 const isBasketItem = (item: Product | Item): item is Item => {
   return (item as Item).quantity !== undefined;
@@ -41,7 +42,7 @@ export const basketApi = createApi({
             else {
               const itemToPush = isBasketItem(item)
                 ? item
-                : new Item(item, quantity);
+                : productToItem(item, quantity);
               draft.items.push(itemToPush);
             }
           })
