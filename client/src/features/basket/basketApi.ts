@@ -3,6 +3,10 @@ import { baseQueryWithErrorHandling } from "../../app/api/baseApi";
 import { Item, type Basket } from "../../app/models/basket";
 import type { Product } from "../../app/models/product";
 
+const isBasketItem = (item: Product | Item): item is Item => {
+  return (item as Item).quantity !== undefined;
+};
+
 export const basketApi = createApi({
   reducerPath: "basketApi",
   baseQuery: baseQueryWithErrorHandling,
@@ -14,23 +18,32 @@ export const basketApi = createApi({
     }),
     addBasketItem: builder.mutation<
       Basket,
-      { product: Product; quantity: number }
+      { item: Product | Item; quantity: number }
     >({
-      query: ({ product, quantity }) => ({
-        url: `basket?productId=${product.id}&quantity=${quantity}`,
-        method: "POST",
-      }),
+      query: ({ item, quantity }) => {
+        const productId = isBasketItem(item) ? item.productId : item.id;
+        return {
+          url: `basket?productId=${productId}&quantity=${quantity}`,
+          method: "POST",
+        };
+      },
       onQueryStarted: async (
-        { product, quantity },
+        { item, quantity },
         { dispatch, queryFulfilled }
       ) => {
         const patchResult = dispatch(
           basketApi.util.updateQueryData("fetchBasket", undefined, (draft) => {
+            const productId = isBasketItem(item) ? item.productId : item.id;
             const existingItem = draft.items.find(
-              (item) => item.productId === product.id
+              (item) => item.productId === productId
             );
             if (existingItem) existingItem.quantity += quantity;
-            else draft.items.push(new Item(product, quantity));
+            else {
+              const itemToPush = isBasketItem(item)
+                ? item
+                : new Item(item, quantity);
+              draft.items.push(itemToPush);
+            }
           })
         );
         try {
