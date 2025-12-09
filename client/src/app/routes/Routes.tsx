@@ -9,6 +9,7 @@ import ServerErrorPage from "../errors/ServerErrorPage";
 import NotFoundPage from "../errors/NotFoundPage";
 import ErrorPage from "../errors/ErrorPage";
 import BasketPage from "../../features/basket/BasketPage";
+import CheckoutPage from "../../features/checkout/CheckoutPage";
 
 export const router = createBrowserRouter([
   {
@@ -50,6 +51,10 @@ export const router = createBrowserRouter([
       {
         path: "/not-found",
         Component: NotFoundPage,
+      },
+      {
+        path: "/checkout",
+        Component: CheckoutPage,
       },
       {
         path: "*",

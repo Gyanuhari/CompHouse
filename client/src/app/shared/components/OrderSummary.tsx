@@ -7,6 +7,7 @@ import {
   Typography,
 } from "@mui/material";
 import type { Basket } from "../../models/basket";
+import { Link } from "react-router-dom";
 
 type Props = {
   basket: Basket;
@@ -63,10 +64,18 @@ export default function OrderSummary({ basket }: Props) {
             </Typography>
           </Box>
           <Box>
-            <Button variant="contained" color="primary" fullWidth>
+            <Button
+              variant="contained"
+              color="primary"
+              fullWidth
+              component={Link}
+              to="/checkout"
+            >
               Checkout
             </Button>
-            <Button fullWidth>Continue Shopping</Button>
+            <Button fullWidth component={Link} to="/catalog">
+              Continue Shopping
+            </Button>
           </Box>
         </Box>
       </Paper>

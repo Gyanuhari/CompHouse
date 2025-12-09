@@ -9,7 +9,7 @@ export default function BasketPage() {
 
   if (isLoading) return <Typography>Loading basket...</Typography>;
 
-  if (!basket)
+  if (!basket || basket.items.length === 0)
     return <Typography variant="h3">Your basket is empty!!</Typography>;
 
   return (
