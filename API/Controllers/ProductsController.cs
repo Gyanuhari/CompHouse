@@ -1,4 +1,6 @@
 using API.DTOs.ProductDtos;
+using API.Extensions;
+using API.Helpers.RequestHelpers;
 using Infrastructure.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -15,11 +17,14 @@ public class ProductsController : BaseApiController
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<ProductToReturnDto>>> GetProducts()
+    public async Task<ActionResult<List<ProductToReturnDto>>> GetProducts([FromQuery] ProductParams prodParams)
     {
         var products = await _context.Products
+            .Sort(prodParams.OrderBy)
+            .Search(prodParams.SearchTerm)
             .Include(p => p.Brand)
             .Include(p => p.Type)
+            .Filter(prodParams.Brands, prodParams.Types)
             .ToListAsync();
 
         return products.Select(product => new ProductToReturnDto
