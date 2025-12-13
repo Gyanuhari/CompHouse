@@ -1,6 +1,7 @@
 using API.DTOs.ProductDtos;
 using API.Extensions;
 using API.Helpers.RequestHelpers;
+using Core.Entities;
 using Infrastructure.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -19,15 +20,16 @@ public class ProductsController : BaseApiController
     [HttpGet]
     public async Task<ActionResult<List<ProductToReturnDto>>> GetProducts([FromQuery] ProductParams prodParams)
     {
-        var products = await _context.Products
+        var query = _context.Products
             .Sort(prodParams.OrderBy)
             .Search(prodParams.SearchTerm)
             .Include(p => p.Brand)
             .Include(p => p.Type)
             .Filter(prodParams.Brands, prodParams.Types)
-            .ToListAsync();
+            .AsQueryable();
 
-        return products.Select(product => new ProductToReturnDto
+        var pagedProducts = await PagedList<Product>.ToPagedList(query, prodParams.PageNumber, prodParams.PageSize);
+        var pagedProductDtos = pagedProducts.Select(product => new ProductToReturnDto
         {
             Id = product.Id,
             Name = product.Name,
@@ -38,6 +40,8 @@ public class ProductsController : BaseApiController
             Type = product.Type?.Name,
             QuantityInStock = product.QuantityInStock,
         }).ToList();
+
+        return Ok(new { items = pagedProductDtos, metadata = pagedProducts.Metadata });
     }
 
     [HttpGet("{id:int}")]
