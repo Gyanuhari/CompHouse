@@ -29,7 +29,9 @@ public class ProductsController : BaseApiController
             .AsQueryable();
 
         var pagedProducts = await PagedList<Product>.ToPagedList(query, prodParams.PageNumber, prodParams.PageSize);
-        var pagedProductDtos = pagedProducts.Select(product => new ProductToReturnDto
+        Response.AddPaginationHeader(pagedProducts.Metadata);
+
+        return pagedProducts.Select(product => new ProductToReturnDto
         {
             Id = product.Id,
             Name = product.Name,
@@ -40,8 +42,6 @@ public class ProductsController : BaseApiController
             Type = product.Type?.Name,
             QuantityInStock = product.QuantityInStock,
         }).ToList();
-
-        return Ok(new { items = pagedProductDtos, metadata = pagedProducts.Metadata });
     }
 
     [HttpGet("{id:int}")]
