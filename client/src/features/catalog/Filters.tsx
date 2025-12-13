@@ -19,8 +19,6 @@ const sortOptions = [
 export default function Filters() {
   const { data: filters } = useFetchFiltersQuery();
 
-  console.log(filters);
-
   return (
     <Box sx={{ display: "flex", flexDirection: "column", gap: 2, pr: 2 }}>
       <Paper>
