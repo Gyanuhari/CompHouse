@@ -1,10 +1,20 @@
-import { TextField } from "@mui/material";
+import { debounce, TextField } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "../../app/store/store";
 import { setSearchTerm } from "./catalogSlice";
+import { useEffect, useState } from "react";
 
 export default function Search() {
   const { searchTerm } = useAppSelector((state) => state.catalog);
   const dispatch = useAppDispatch();
+  const [term, setTerm] = useState(searchTerm);
+
+  useEffect(() => {
+    setTerm(searchTerm);
+  }, [searchTerm]);
+
+  const debouncedSearch = debounce((value) => {
+    dispatch(setSearchTerm(value));
+  }, 500);
 
   return (
     <TextField
@@ -12,8 +22,11 @@ export default function Search() {
       variant="outlined"
       fullWidth
       type="search"
-      value={searchTerm}
-      onChange={(e) => dispatch(setSearchTerm(e.target.value))}
+      value={term}
+      onChange={(e) => {
+        setTerm(e.target.value);
+        debouncedSearch(e.target.value);
+      }}
     />
   );
 }
