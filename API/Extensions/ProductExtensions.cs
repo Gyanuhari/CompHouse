@@ -1,3 +1,4 @@
+using API.DTOs.ProductDtos;
 using Core.Entities;
 using Microsoft.IdentityModel.Tokens;
 
@@ -33,5 +34,20 @@ public static class ProductExtensions
             query = query.Where(x => types.Count() == 0 || types.ToList().Contains(x.Type.Name.ToLower()));
 
         return query;
+    }
+
+    public static ProductToReturnDto ToReturnDto(this Product product)
+    {
+        return new ProductToReturnDto
+        {
+            Id = product.Id,
+            Name = product.Name,
+            Description = product.Description,
+            Price = product.Price,
+            ImageUrl = product.PrimaryImageUrl,
+            Brand = product.Brand?.Name,
+            Type = product.Type?.Name,
+            QuantityInStock = product.QuantityInStock,
+        };
     }
 }

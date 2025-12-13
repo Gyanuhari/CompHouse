@@ -31,17 +31,7 @@ public class ProductsController : BaseApiController
         var pagedProducts = await PagedList<Product>.ToPagedList(query, prodParams.PageNumber, prodParams.PageSize);
         Response.AddPaginationHeader(pagedProducts.Metadata);
 
-        return pagedProducts.Select(product => new ProductToReturnDto
-        {
-            Id = product.Id,
-            Name = product.Name,
-            Description = product.Description,
-            Price = product.Price,
-            ImageUrl = product.PrimaryImageUrl,
-            Brand = product.Brand?.Name,
-            Type = product.Type?.Name,
-            QuantityInStock = product.QuantityInStock,
-        }).ToList();
+        return pagedProducts.Select(product => product.ToReturnDto()).ToList();
     }
 
     [HttpGet("{id:int}")]
@@ -56,16 +46,15 @@ public class ProductsController : BaseApiController
 
         if (product == null) return NotFound();
 
-        return new ProductToReturnDto()
-        {
-            Id = product.Id,
-            Name = product.Name,
-            Description = product.Description,
-            Price = product.Price,
-            ImageUrl = product.PrimaryImageUrl,
-            Brand = product.Brand?.Name,
-            Type = product.Type?.Name,
-            QuantityInStock = product.QuantityInStock,
-        };
+        return product.ToReturnDto();
+    }
+
+    [HttpGet("filters")]
+    public async Task<IActionResult> GetFilters()
+    {
+        var brands = await _context.Brands.Select(b => b.Name).Distinct().ToListAsync();
+        var types = await _context.Types.Select(t => t.Name).Distinct().ToListAsync();
+
+        return Ok(new { brands = brands, types = types });
     }
 }
