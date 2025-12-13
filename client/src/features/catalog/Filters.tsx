@@ -6,9 +6,9 @@ import {
   FormGroup,
   Paper,
   Radio,
-  TextField,
 } from "@mui/material";
 import { useFetchFiltersQuery } from "./catalogApi";
+import Search from "./Search";
 
 const sortOptions = [
   { value: "name", label: "Alphabetical" },
@@ -22,7 +22,7 @@ export default function Filters() {
   return (
     <Box sx={{ display: "flex", flexDirection: "column", gap: 2, pr: 2 }}>
       <Paper>
-        <TextField label="Search products" variant="outlined" fullWidth />
+        <Search />
       </Paper>
       <Paper sx={{ p: 3 }}>
         <FormControl>
@@ -42,7 +42,9 @@ export default function Filters() {
             filters.brands.map((brand) => (
               <FormControlLabel
                 key={brand}
-                control={<Checkbox color="secondary" sx={{ py: 0.7 , fontSize: 40}} />}
+                control={
+                  <Checkbox color="secondary" sx={{ py: 0.7, fontSize: 40 }} />
+                }
                 label={brand}
               />
             ))}
@@ -54,7 +56,9 @@ export default function Filters() {
             filters.types.map((type) => (
               <FormControlLabel
                 key={type}
-                control={<Checkbox color="secondary" sx={{ py: 0.7 , fontSize: 40}} />}
+                control={
+                  <Checkbox color="secondary" sx={{ py: 0.7, fontSize: 40 }} />
+                }
                 label={type}
               />
             ))}
