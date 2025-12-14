@@ -1,15 +1,14 @@
 import {
   Box,
   Checkbox,
-  FormControl,
   FormControlLabel,
   FormGroup,
   Paper,
-  Radio,
 } from "@mui/material";
 import { useFetchFiltersQuery } from "./catalogApi";
 import Search from "./Search";
 import { useAppDispatch, useAppSelector } from "../../app/store/store";
+import RadioButtonGroup from "../../app/shared/components/RadioButtonGroup";
 import { setOrderBy } from "./catalogSlice";
 
 const sortOptions = [
@@ -29,18 +28,11 @@ export default function Filters() {
         <Search />
       </Paper>
       <Paper sx={{ p: 3 }}>
-        <FormControl>
-          {sortOptions.map((option) => (
-            <FormControlLabel
-              key={option.label}
-              control={<Radio sx={{ py: 0.7 }} />}
-              label={option.label}
-              value={option.value}
-              checked={option.value === orderBy}
-              onChange={() => dispatch(setOrderBy(option.value))}
-            />
-          ))}
-        </FormControl>
+        <RadioButtonGroup
+          options={sortOptions}
+          selectedValue={orderBy}
+          onChange={(e) => dispatch(setOrderBy(e.target.value))}
+        />
       </Paper>
       <Paper sx={{ p: 3 }}>
         <FormGroup>
