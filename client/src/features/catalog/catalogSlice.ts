@@ -7,7 +7,7 @@ const initialState: ProductParams = {
   brands: [],
   types: [],
   pageNumber: 1,
-  pageSize: 50,
+  pageSize: 8,
 };
 
 export const catalogSlice = createSlice({
