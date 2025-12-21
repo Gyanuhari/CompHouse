@@ -1,5 +1,4 @@
-import { Box, Paper, Typography } from "@mui/material";
-import { useFetchFiltersQuery } from "./catalogApi";
+import { Box, Paper } from "@mui/material";
 import Search from "./Search";
 import { useAppDispatch, useAppSelector } from "../../app/store/store";
 import RadioButtonGroup from "../../app/shared/components/RadioButtonGroup";
@@ -12,13 +11,13 @@ const sortOptions = [
   { value: "price", label: "Price: Low to High" },
 ];
 
-export default function Filters() {
-  const { data: filters } = useFetchFiltersQuery();
+type Props = {
+  filters: { brands: string[]; types: string[] };
+};
+
+export default function Filters({ filters }: Props) {
   const { brands, types, orderBy } = useAppSelector((state) => state.catalog);
   const dispatch = useAppDispatch();
-
-  if (!filters?.brands || !filters?.types)
-    return <Typography>Loading...</Typography>;
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", gap: 2, pr: 2 }}>
