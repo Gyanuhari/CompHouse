@@ -1,44 +1,33 @@
 import { LockOutlined } from "@mui/icons-material";
-import {
-  Box,
-  Button,
-  Container,
-  Paper,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Box, Button, Container, Paper, Typography } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
-import { useState, type ChangeEvent } from "react";
 import { useLoginMutation } from "./accountApi";
+import TextInput from "../../app/shared/components/TextInput";
+import useInput from "../../app/hooks/useInput";
+import {
+  allOf,
+  isNotEmpty,
+  isValidEmail,
+  isValidPassword,
+} from "../../lib/util";
 
 export default function LoginForm() {
   const [login, { isLoading }] = useLoginMutation();
   const navigate = useNavigate();
 
-  const [email, setEmail] = useState("");
-  const [emailEdit, setEmailEdit] = useState(false);
+  const {
+    value: email,
+    hasError: emailHasError,
+    handleInputBlur: handleEmailBlur,
+    handleInputChange: handleEmailChange,
+  } = useInput("", allOf(isNotEmpty, isValidEmail));
 
-  const [password, setPassword] = useState("");
-  const [passwordEdit, setPasswordEdit] = useState(false);
-
-  const emailIsInvalid =
-    emailEdit && (!email.includes("@") || !email.includes("."));
-  const passwordIsInvalid = passwordEdit && password.length < 6;
-
-  const handleEmailBlur = () => setEmailEdit(true);
-  const handlePasswordBlur = () => setPasswordEdit(true);
-
-  const handleEmailChange = (event: ChangeEvent<HTMLInputElement>) =>
-    setEmail(event.target.value);
-  const handlePasswordChange = (event: ChangeEvent<HTMLInputElement>) =>
-    setPassword(event.target.value);
-
-  const buttonDisabled =
-    !emailEdit ||
-    emailIsInvalid ||
-    !passwordEdit ||
-    passwordIsInvalid ||
-    isLoading;
+  const {
+    value: password,
+    hasError: passwordHasError,
+    handleInputBlur: handlePasswordBlur,
+    handleInputChange: handlePasswordChange,
+  } = useInput("", allOf(isNotEmpty, isValidPassword));
 
   const handleSubmit = async () => {
     try {
@@ -67,28 +56,26 @@ export default function LoginForm() {
           width="100%"
           marginY={3}
         >
-          <TextField
+          <TextInput
             label="Email"
             type="email"
             name="email"
-            autoFocus
             fullWidth
             value={email}
-            error={emailIsInvalid}
-            helperText={emailIsInvalid && "Please enter valid email address"}
+            helperText={emailHasError && "Please enter valid email address"}
             onBlur={handleEmailBlur}
             onChange={handleEmailChange}
             slotProps={{ input: { autoComplete: "email" } }}
           />
-          <TextField
+          <TextInput
             label="Password"
             type="password"
             name="password"
             fullWidth
             value={password}
-            error={passwordIsInvalid}
             helperText={
-              passwordIsInvalid && "Password must be longer than 6 characters"
+              passwordHasError &&
+              "Password must contain 8-15 characters, including uppercase, lowercase, number and special character"
             }
             onBlur={handlePasswordBlur}
             onChange={handlePasswordChange}
@@ -96,7 +83,7 @@ export default function LoginForm() {
           />
           <Button
             variant="contained"
-            disabled={buttonDisabled}
+            disabled={isLoading}
             onClick={handleSubmit}
           >
             {isLoading ? "Signing In..." : "Sign In"}
