@@ -12,7 +12,4 @@ public class RegisterDto
 
     [Required]
     public string Password { get; set; }
-
-    [Required]
-    public DateOnly DateOfBirth { get; set; }
 }

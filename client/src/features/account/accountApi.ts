@@ -6,6 +6,7 @@ import type {
   UserResponse,
 } from "../../app/models/user";
 import { router } from "../../app/routes/Routes";
+import { toast } from "react-toastify";
 
 export const accountApi = createApi({
   reducerPath: "accountApi",
@@ -37,6 +38,16 @@ export const accountApi = createApi({
           method: "POST",
         };
       },
+      async onQueryStarted(_, { queryFulfilled }) {
+        try {
+          await queryFulfilled;
+          router.navigate("/login");
+          toast.success("Registration successful! Please log in");
+        } catch (error) {
+          console.log(error);
+          throw error;
+        }
+      },
     }),
     userInfo: builder.query<UserResponse, void>({
       query: () => {
@@ -66,4 +77,5 @@ export const {
   useLogOutMutation,
   useRegisterMutation,
   useUserInfoQuery,
+  useLazyUserInfoQuery
 } = accountApi;

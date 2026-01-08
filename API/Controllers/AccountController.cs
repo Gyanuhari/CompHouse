@@ -19,7 +19,6 @@ public class AccountController(SignInManager<ApplicationUser> signInManager) : B
             FullName = registerDto.FullName,
             UserName = registerDto.Email,
             Email = registerDto.Email,
-            DateOfBirth = registerDto.DateOfBirth,
         };
 
         var result = await signInManager.UserManager.CreateAsync(user, registerDto.Password);

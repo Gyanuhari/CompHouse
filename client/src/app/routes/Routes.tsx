@@ -11,6 +11,7 @@ import ErrorPage from "../errors/ErrorPage";
 import BasketPage from "../../features/basket/BasketPage";
 import CheckoutPage from "../../features/checkout/CheckoutPage";
 import LoginForm from "../../features/account/LoginForm";
+import RegisterForm from "../../features/account/RegisterForm";
 
 export const router = createBrowserRouter([
   {
@@ -60,6 +61,10 @@ export const router = createBrowserRouter([
       {
         path: "/login",
         Component: LoginForm,
+      },
+      {
+        path: "/register",
+        Component: RegisterForm,
       },
       {
         path: "*",

@@ -5,7 +5,6 @@ export type LoginRequest = {
 
 export type RegisterRequest = LoginRequest & {
   fullName: string;
-  dateOfBirth: string;
 };
 
 export type UserResponse = {
