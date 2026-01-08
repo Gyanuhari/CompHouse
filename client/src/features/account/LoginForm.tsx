@@ -1,7 +1,7 @@
 import { LockOutlined } from "@mui/icons-material";
 import { Box, Button, Container, Paper, Typography } from "@mui/material";
-import { Link, useNavigate } from "react-router-dom";
-import { useLoginMutation } from "./accountApi";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useLazyUserInfoQuery, useLoginMutation } from "./accountApi";
 import TextInput from "../../app/shared/components/TextInput";
 import useInput from "../../app/hooks/useInput";
 import {
@@ -13,6 +13,8 @@ import {
 
 export default function LoginForm() {
   const [login, { isLoading }] = useLoginMutation();
+  const [fetchUserInfo] = useLazyUserInfoQuery();
+  const location = useLocation();
   const navigate = useNavigate();
 
   const {
@@ -32,7 +34,9 @@ export default function LoginForm() {
   const handleSubmit = async () => {
     try {
       await login({ email: email, password: password }).unwrap();
-      navigate("/catalog");
+      // Forces immediate cache update invalidated by login mutation, before navigation.
+      await fetchUserInfo();
+      navigate(location.state.from || "/catalog");
     } catch (error) {
       console.log(error);
     }

@@ -12,12 +12,22 @@ import BasketPage from "../../features/basket/BasketPage";
 import CheckoutPage from "../../features/checkout/CheckoutPage";
 import LoginForm from "../../features/account/LoginForm";
 import RegisterForm from "../../features/account/RegisterForm";
+import RequireAuth from "./RequireAuth";
 
 export const router = createBrowserRouter([
   {
     path: "/",
     Component: App,
     children: [
+      {
+        Component: RequireAuth,
+        children: [
+          {
+            path: "/checkout",
+            Component: CheckoutPage,
+          },
+        ],
+      },
       {
         path: "",
         Component: HomePage,
@@ -53,10 +63,6 @@ export const router = createBrowserRouter([
       {
         path: "/not-found",
         Component: NotFoundPage,
-      },
-      {
-        path: "/checkout",
-        Component: CheckoutPage,
       },
       {
         path: "/login",
