@@ -1,5 +1,13 @@
-import { LockOutlined } from "@mui/icons-material";
-import { Box, Button, Container, Paper, Typography } from "@mui/material";
+import { LockOutlined, Visibility, VisibilityOff } from "@mui/icons-material";
+import {
+  Box,
+  Button,
+  Container,
+  IconButton,
+  InputAdornment,
+  Paper,
+  Typography,
+} from "@mui/material";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useLazyUserInfoQuery, useLoginMutation } from "./accountApi";
 import TextInput from "../../app/shared/components/TextInput";
@@ -10,12 +18,15 @@ import {
   isValidEmail,
   isValidPassword,
 } from "../../lib/util";
+import { useState } from "react";
+import type { LoginRequest } from "../../app/models/user";
 
 export default function LoginForm() {
   const [login, { isLoading }] = useLoginMutation();
   const [fetchUserInfo] = useLazyUserInfoQuery();
   const location = useLocation();
   const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
 
   const {
     value: email,
@@ -33,7 +44,8 @@ export default function LoginForm() {
 
   const handleSubmit = async () => {
     try {
-      await login({ email: email, password: password }).unwrap();
+      const credentials: LoginRequest = { email: email.trim(), password };
+      await login(credentials).unwrap();
       // Forces immediate cache update invalidated by login mutation, before navigation.
       await fetchUserInfo();
       navigate(location.state?.from || "/catalog");
@@ -73,7 +85,7 @@ export default function LoginForm() {
           />
           <TextInput
             label="Password"
-            type="password"
+            type={showPassword ? "text" : "password"}
             name="password"
             fullWidth
             value={password}
@@ -83,7 +95,23 @@ export default function LoginForm() {
             }
             onBlur={handlePasswordBlur}
             onChange={handlePasswordChange}
-            slotProps={{ input: { autoComplete: "current-password" } }}
+            slotProps={{
+              input: {
+                autoComplete: "current-password",
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={() => setShowPassword(!showPassword)}
+                      onMouseDown={(e) => e.preventDefault()}
+                      edge="end"
+                      size="small"
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              },
+            }}
           />
           <Button
             variant="contained"
