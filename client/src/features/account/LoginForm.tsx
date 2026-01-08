@@ -36,7 +36,7 @@ export default function LoginForm() {
       await login({ email: email, password: password }).unwrap();
       // Forces immediate cache update invalidated by login mutation, before navigation.
       await fetchUserInfo();
-      navigate(location.state.from || "/catalog");
+      navigate(location.state?.from || "/catalog");
     } catch (error) {
       console.log(error);
     }
