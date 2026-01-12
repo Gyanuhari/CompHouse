@@ -6,6 +6,8 @@ public class Basket
 {
     public int Id { get; set; }
     public required string BasketId { get; set; }
+    public string ClientSecret { get; set; }
+    public string PaymentIntentId { get; set; }
 
     public List<BasketItem> BasketItems { get; set; } = [];
 

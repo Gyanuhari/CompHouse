@@ -2,6 +2,7 @@ using API.Middlewares;
 using Core.Entities;
 using Infrastructure.Data;
 using Infrastructure.Data.Seeders;
+using Infrastructure.Services.Payment;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,6 +19,7 @@ builder.Services.AddDbContext<CompContext>(option =>
 });
 builder.Services.AddCors();
 builder.Services.AddTransient<ExceptionMiddleware>();
+builder.Services.AddScoped<StripePaymentService>();
 builder.Services.AddIdentityApiEndpoints<ApplicationUser>(option =>
 {
     option.Password.RequiredLength = 8;
