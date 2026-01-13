@@ -42,7 +42,7 @@ export default function ProductCard({ product }: Props) {
           {product.name}
         </Typography>
         <Typography variant="h6" sx={{ color: "secondary.main" }}>
-          ${(product.price / 100).toFixed(2)}
+          ${product.price.toFixed(2)}
         </Typography>
       </CardContent>
       <CardActions sx={{ justifyContent: "space-between" }}>
