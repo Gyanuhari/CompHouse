@@ -47,12 +47,12 @@ export default function CheckoutPage() {
           <Typography variant="h6">Loading Checkout...</Typography>
         ) : (
           <Elements stripe={stripePromise} options={options}>
-            <CheckoutStepper basket={basket} />
+            <CheckoutStepper />
           </Elements>
         )}
       </Grid>
       <Grid size={4}>
-        <OrderSummary basket={basket} />
+        <OrderSummary />
       </Grid>
     </Grid>
   );

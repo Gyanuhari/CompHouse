@@ -6,21 +6,11 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import type { Basket } from "../../models/basket";
 import { Link } from "react-router-dom";
+import useBasket from "../../hooks/useBasket";
 
-type Props = {
-  basket: Basket;
-};
-
-export default function OrderSummary({ basket }: Props) {
-  const subTotal =
-    basket?.items?.reduce(
-      (subTotal, item) => subTotal + item.quantity * item.price,
-      0
-    ) ?? 0;
-
-  const deliveryFee = subTotal < 2500 ? 50 : 0;
+export default function OrderSummary() {
+  const { subTotal, total, deliveryFee } = useBasket();
 
   return (
     <Box
@@ -60,7 +50,7 @@ export default function OrderSummary({ basket }: Props) {
           <Box display="flex" justifyContent="space-between" mb={1}>
             <Typography color="textSecondary">Total</Typography>
             <Typography color="textSecondary">
-              ${(subTotal + deliveryFee).toFixed(2)}
+              ${(total).toFixed(2)}
             </Typography>
           </Box>
           <Box>

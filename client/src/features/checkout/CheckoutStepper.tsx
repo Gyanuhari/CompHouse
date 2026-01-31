@@ -25,16 +25,13 @@ import type {
   StripeAddressElementChangeEvent,
   StripePaymentElementChangeEvent,
 } from "@stripe/stripe-js";
-import type { Basket } from "../../app/models/basket";
-
-type Props = {
-  basket: Basket;
-};
+import useBasket from "../../app/hooks/useBasket";
 
 const steps = ["Address", "Payment", "Review"];
 
-export default function CheckoutStepper({ basket }: Props) {
+export default function CheckoutStepper() {
   const { data: address, isLoading } = useFetchAddressQuery();
+  const { total } = useBasket();
   const [updateAddress] = useUpdateAddressMutation();
   const [activeStep, setActiveStep] = useState(0);
   const [saveAddressChecked, setSaveAddressChecked] = useState(false);
@@ -67,12 +64,6 @@ export default function CheckoutStepper({ basket }: Props) {
     }
     return null;
   };
-
-  const subTotal =
-    basket.items.reduce(
-      (subTotal, item) => subTotal + item.price * item.quantity,
-      0
-    ) ?? 0;
 
   if (isLoading) return <Typography variant="h6">Loading...</Typography>;
 
@@ -132,7 +123,7 @@ export default function CheckoutStepper({ basket }: Props) {
               activeStep === 3
             }
           >
-            {activeStep === 2 ? `Pay $${subTotal.toFixed(2)}` : "Next"}
+            {activeStep === 2 ? `Pay $${total.toFixed(2)}` : "Next"}
           </Button>
         </Box>
       </Paper>

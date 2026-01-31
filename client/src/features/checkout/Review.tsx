@@ -8,10 +8,10 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import { useFetchBasketQuery } from "../basket/basketApi";
+import useBasket from "../../app/hooks/useBasket";
 
 export default function Review() {
-  const { data: basket } = useFetchBasketQuery();
+  const { basket } = useBasket();
 
   return (
     <div>
