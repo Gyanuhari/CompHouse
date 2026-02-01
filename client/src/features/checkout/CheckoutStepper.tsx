@@ -13,6 +13,7 @@ import {
   AddressElement,
   PaymentElement,
   useElements,
+  useStripe,
 } from "@stripe/react-stripe-js";
 import { useState } from "react";
 import Review from "./Review";
@@ -22,10 +23,12 @@ import {
 } from "../account/accountApi";
 import type { Address } from "../../app/models/user";
 import type {
+  ConfirmationToken,
   StripeAddressElementChangeEvent,
   StripePaymentElementChangeEvent,
 } from "@stripe/stripe-js";
 import useBasket from "../../app/hooks/useBasket";
+import { toast } from "react-toastify";
 
 const steps = ["Address", "Payment", "Review"];
 
@@ -37,12 +40,24 @@ export default function CheckoutStepper() {
   const [saveAddressChecked, setSaveAddressChecked] = useState(false);
   const [addressComplete, setAddressComplete] = useState(false);
   const [paymentComplete, setPaymentComplete] = useState(false);
+  const [confirmationToken, setConfirmationToken] =
+    useState<ConfirmationToken | null>(null);
   const elements = useElements();
+  const stripe = useStripe();
 
   const handleNext = async () => {
     if (activeStep === 0 && saveAddressChecked) {
       const address = await getStripeAddress();
       if (address) await updateAddress(address);
+    }
+    if (activeStep === 1) {
+      if (!elements || !stripe) return;
+      const result = await elements.submit();
+      if (result.error) return toast.error(result.error.message);
+
+      const stripeResult = await stripe.createConfirmationToken({ elements });
+      if (stripeResult.error) return toast.error(stripeResult.error.message);
+      setConfirmationToken(stripeResult.confirmationToken);
     }
     setActiveStep((prevState) => prevState + 1);
   };
@@ -108,7 +123,7 @@ export default function CheckoutStepper() {
             <PaymentElement onChange={handlePaymentChange} />
           </Box>
           <Box sx={{ display: activeStep === 2 ? "block" : "none" }}>
-            <Review />
+            <Review confirmationToken={confirmationToken} />
           </Box>
         </Box>
         <Box display="flex" paddingTop={2} justifyContent="space-between">

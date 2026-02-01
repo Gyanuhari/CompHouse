@@ -9,9 +9,28 @@ import {
   Typography,
 } from "@mui/material";
 import useBasket from "../../app/hooks/useBasket";
+import type { ConfirmationToken } from "@stripe/stripe-js";
 
-export default function Review() {
+type Props = {
+  confirmationToken: ConfirmationToken | null;
+};
+
+export default function Review({ confirmationToken }: Props) {
   const { basket } = useBasket();
+
+  const addressString = () => {
+    if (!confirmationToken?.shipping) return "";
+    const { address } = confirmationToken.shipping;
+    return `${address?.line1}, ${address?.city}, ${address?.state}, ${address?.postal_code}, ${address?.country}`;
+  };
+
+  const paymentString = () => {
+    if (!confirmationToken?.payment_method_preview) return "";
+    const { card } = confirmationToken.payment_method_preview;
+    return `${card?.brand.toUpperCase()}, **** **** **** ${card?.last4}, Exp: ${
+      card?.exp_month
+    }/${card?.exp_year}`;
+  };
 
   return (
     <div>
@@ -24,13 +43,13 @@ export default function Review() {
             Shipping Address
           </Typography>
           <Typography component="dd" mt={1} color="textsecondary">
-            Address goes here
+            {addressString()}
           </Typography>
           <Typography component="dt" fontWeight="medium">
             Payment Details
           </Typography>
           <Typography component="dd" mt={1} color="textsecondary">
-            Payment details goes here
+            {paymentString()}
           </Typography>
         </dl>
       </Box>
