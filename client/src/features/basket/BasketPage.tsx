@@ -21,7 +21,7 @@ export default function BasketPage() {
           ))}
         </Grid>
         <Grid size={4}>
-          <OrderSummary basket={basket} />
+          <OrderSummary />
         </Grid>
       </Grid>
     </>

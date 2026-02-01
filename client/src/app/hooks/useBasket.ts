@@ -1,7 +1,11 @@
-import { useFetchBasketQuery } from "../../features/basket/basketApi";
+import {
+  useClearBasketMutation,
+  useFetchBasketQuery,
+} from "../../features/basket/basketApi";
 
 export default function useBasket() {
   const { data: basket } = useFetchBasketQuery();
+  const [clearBasket] = useClearBasketMutation();
 
   const subTotal =
     basket?.items.reduce(
@@ -12,5 +16,5 @@ export default function useBasket() {
   const deliveryFee = subTotal < 2500 ? 50 : 0;
   const total = subTotal + deliveryFee;
 
-  return { basket, subTotal, total, deliveryFee };
+  return { basket, clearBasket, subTotal, total, deliveryFee };
 }
